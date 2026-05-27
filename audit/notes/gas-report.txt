@@ -1,0 +1,42 @@
+=== Kiln V1 Gas Report ===
+
+Date: 2026-05-26
+Foundry Version: 1.5.1-stable
+Solc Version: 0.8.13
+EVM Version: london
+Optimizer: enabled (runs: 10000)
+
+---
+
+CONFIGURATION
+=============
+The project's foundry.toml includes `gas_reports = ["*"]` which enables
+gas reporting for all contracts when tests are present.
+
+Gas reports will be automatically generated once test functions are written.
+Run `forge test --gas-report` or `forge snapshot` after adding tests to
+produce per-function gas cost estimates.
+
+GAS SNAPSHOT
+============
+No gas snapshot was generated because no test functions exist yet.
+The source code was reconstructed from Etherscan/Sourcify, which does
+not include tests.
+
+To generate:
+  1. Write test contracts (e.g., in audit/tests/ or test/)
+  2. Run: forge test --gas-report
+  3. Or:  forge snapshot --snap audit/notes/gas-snapshot.txt
+
+CONTRACT SIZES (from compilation)
+=================================
+(To be filled after deploying or via `forge inspect` commands)
+
+Contract bytecode sizes can be checked with:
+  forge inspect <ContractName> deployedBytecode | wc -c
+
+The EVM contract size limit is 24,576 bytes (0x6000).
+
+IMPORTANT NOTE: During Slither analysis, forge clean + forge build
+is executed, which triggers compilation. The contracts compile
+successfully with Solc 0.8.13.

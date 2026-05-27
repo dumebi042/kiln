@@ -1,0 +1,1974 @@
+--- Page 1 ---
+Kiln.fi - Staking
+Smart Contract Security Audit
+Prepared by: Halborn
+Date of Engagement: July 5th, 2022 - July 22nd, 2022
+Visit: Halborn.com
+
+
+--- Page 2 ---
+DOCUMENT REVISION HISTORY
+4
+CONTACTS
+5
+1
+EXECUTIVE OVERVIEW
+6
+1.1
+INTRODUCTION
+7
+1.2
+AUDIT SUMMARY
+7
+1.3
+TEST APPROACH & METHODOLOGY
+7
+RISK METHODOLOGY
+8
+1.4
+SCOPE
+10
+2
+ASSESSMENT SUMMARY & FINDINGS OVERVIEW
+11
+3
+FINDINGS & TECH DETAILS
+12
+3.1
+(HAL-01) REWARDS WITHDRAWAL WITHOUT FEES CHARGING IS POSSIBLE -
+CRITICAL
+14
+Description
+14
+Proof of Concept
+17
+Risk Level
+18
+Recommendation
+19
+Remediation Plan
+19
+3.2
+(HAL-02) OPERATORS FAVORING DUE TO INCORRECT USE OF BLOCKHASH -
+HIGH
+20
+Description
+20
+Proof of Concept
+22
+Risk Level
+23
+Recommendation
+23
+Remediation Plan
+23
+3.3
+(HAL-03) ADDING VAST NUMBER OF OPERATORS CAN DOS DEPOSIT FUNC-
+TIONALITY - MEDIUM
+24
+1
+
+
+--- Page 3 ---
+Description
+24
+Proof of Concept
+26
+Risk Level
+27
+Recommendation
+27
+Remediation Plan
+27
+3.4
+(HAL-04) LACK OF TRANSFER OWNERSHIP PATTERN - LOW
+28
+Description
+28
+Risk Level
+28
+Recommendation
+28
+Remediation Plan
+29
+3.5
+(HAL-05) STAKINGCONTRACT LACKS FEES VALIDATION IN INITIALIZE
+FUNCTION - INFORMATIONAL
+30
+Description
+30
+Risk Level
+31
+Recommendation
+31
+Remediation Plan
+31
+3.6
+(HAL-06) UNUSED ERROR AND FUNCTIONS DECLARED - INFORMATIONAL
+32
+Description
+32
+Risk Level
+33
+Recommendation
+34
+Remediation Plan
+34
+3.7
+(HAL-07) LOW LEVEL CALL IN USE - INFORMATIONAL
+35
+Description
+35
+Risk Level
+38
+Recommendation
+38
+Remediation Plan
+38
+2
+
+
+--- Page 4 ---
+3.8
+(HAL-08) LIMIT INCREASE FOR DEACTIVATED OPERATOR IS POSSIBLE -
+INFORMATIONAL
+39
+Description
+39
+Risk Level
+39
+Recommendation
+40
+Remediation Plan
+40
+4
+AUTOMATED TESTING
+41
+4.1
+STATIC ANALYSIS REPORT
+42
+Description
+42
+Slither results
+42
+4.2
+AUTOMATED SECURITY SCAN
+52
+Description
+52
+MythX results
+52
+3
+
+
+--- Page 5 ---
+DOCUMENT REVISION HISTORY
+VERSION
+MODIFICATION
+DATE
+AUTHOR
+0.1
+Document Creation
+07/14/2022
+Grzegorz Trawinski
+0.2
+Document Update
+07/15/2022
+Grzegorz Trawinski
+0.3
+Document Update
+07/18/2022
+Grzegorz Trawinski
+0.4
+Document Update
+07/20/2022
+Grzegorz Trawinski
+0.5
+Document Update
+07/21/2022
+Grzegorz Trawinski
+0.6
+Draft Review
+07/21/2022
+Kubilay Onur Gungor
+0.7
+Draft Review
+07/22/2022
+Gabi Urrutia
+1.0
+Remediation Plan
+08/22/2022
+Grzegorz Trawinski
+1.1
+Remediation Plan Review
+08/24/2022
+Kubilay Onur Gungor
+1.2
+Remediation Plan Review
+08/25/2022
+Gabi Urrutia
+4
+
+
+--- Page 6 ---
+CONTACTS
+CONTACT
+COMPANY
+EMAIL
+Rob Behnke
+Halborn
+Rob.Behnke@halborn.com
+Steven Walbroehl
+Halborn
+Steven.Walbroehl@halborn.com
+Gabi Urrutia
+Halborn
+Gabi.Urrutia@halborn.com
+Kubilay Onur
+Gungor
+Halborn
+kubilay.gungor@halborn.com
+Grzegorz
+Trawinski
+Halborn
+Grzegorz.Trawinski@halborn.com
+5
+
+
+--- Page 7 ---
+6
+EXECUTIVE OVERVIEW
+
+
+--- Page 8 ---
+1.1 INTRODUCTION
+Kiln.fi engaged Halborn to conduct a security audit on their smart
+contracts beginning on July 5th, 2022 and ending on June 22nd, 2022.
+The security assessment was scoped to the smart contracts provided in the
+GitHub repository kilnfi/staking.contracts
+1.2 AUDIT SUMMARY
+The team at Halborn was provided two weeks for the engagement and assigned
+a full-time security engineer to audit the security of the smart contract.
+The security engineer is a blockchain and smart-contract security expert
+with advanced penetration testing,
+smart-contract hacking,
+and deep
+knowledge of multiple blockchain protocols.
+The purpose of this audit is to:
+• Ensure that smart contract functions operate as intended
+• Identify potential security issues with the smart contracts
+In summary, Halborn identified some security risks that were mostly
+addressed by the Kiln.fi team.
+The team at Halborn was provided the retest activity on August 22nd, 2022.
+All issues non-informational issues were addressed and fixed (Halborn
+Audit resolutions. The HAL-07 issue was acknowledged.
+1.3 TEST APPROACH & METHODOLOGY
+Halborn performed a combination of manual and automated security testing
+to balance efficiency, timeliness, practicality, and accuracy in regard
+to the scope of this audit. While manual testing is recommended to uncover
+flaws in logic, process, and implementation; automated testing techniques
+7
+EXECUTIVE OVERVIEW
+
+
+--- Page 9 ---
+help enhance coverage of the bridge code and can quickly identify items
+that do not follow security best practices.
+The following phases and
+associated tools were used throughout the term of the audit:
+• Research into architecture and purpose
+• Smart contract manual code review and walkthrough
+• Graphing out functionality and contract logic/connectivity/functions.
+(solgraph)
+• Manual assessment of use and safety for the critical Solidity
+variables and functions in scope to identify any arithmetic related
+vulnerability classes
+• Manual testing by custom scripts
+• Scanning of solidity files for vulnerabilities, security hotspots
+or bugs. (MythX)
+• Static
+Analysis
+of
+security
+for
+scoped
+contract,
+and
+imported
+functions. (Slither)
+• Testnet deployment (Brownie, Remix IDE, Visual Studio Code)
+RISK METHODOLOGY:
+Vulnerabilities or issues observed by Halborn are ranked based on the
+risk assessment methodology by measuring the LIKELIHOOD of a security
+incident
+and
+the
+IMPACT
+should
+an
+incident
+occur.
+This
+framework
+works for communicating the characteristics and impacts of technology
+vulnerabilities. The quantitative model ensures repeatable and accurate
+measurement while enabling users to see the underlying vulnerability
+characteristics that were used to generate the Risk scores.
+For every
+vulnerability, a risk level will be calculated on a scale of 5 to 1 with
+5 being the highest likelihood or impact.
+RISK SCALE - LIKELIHOOD
+5 - Almost certain an incident will occur.
+4 - High probability of an incident occurring.
+3 - Potential of a security incident in the long term.
+2 - Low probability of an incident occurring.
+1 - Very unlikely issue will cause an incident.
+8
+EXECUTIVE OVERVIEW
+
+
+--- Page 10 ---
+RISK SCALE - IMPACT
+5 - May cause devastating and unrecoverable impact or loss.
+4 - May cause a significant level of impact or loss.
+3 - May cause a partial impact or loss to many.
+2 - May cause temporary impact or loss.
+1 - May cause minimal or un-noticeable impact.
+The risk level is then calculated using a sum of these two values, creating
+a value of 10 to 1 with 10 being the highest level of security risk.
+CRITICAL
+HIGH
+MEDIUM
+LOW
+INFORMATIONAL
+10 - CRITICAL
+9 - 8 - HIGH
+7 - 6 - MEDIUM
+5 - 4 - LOW
+3 - 1 - VERY LOW AND INFORMATIONAL
+9
+EXECUTIVE OVERVIEW
+
+
+--- Page 11 ---
+1.4 SCOPE
+IN-SCOPE:
+The security assessment was scoped to the following smart contracts:
+• libs/BytesLib.sol
+• libs/FeeRecipientStorageLib.sol
+• libs/StakingContractStorageLib.sol
+• libs/UintLib.sol
+• ConsensusLayerFeeDispatcher.sol
+• ExecutionLayerFeeDispatcher.sol
+• FeeRecipient.sol
+• StakingContract.sol
+• Treasury.sol
+• TUPProxy.sol
+Commit ID: 35b32b67850e06056cd93a1c9f2c4cb15e5a47dc
+OUT-OF-SCOPE:
+Other smart contracts in the repository, external libraries and economical
+attacks.
+10
+EXECUTIVE OVERVIEW
+
+
+--- Page 12 ---
+2. ASSESSMENT SUMMARY & FINDINGS
+OVERVIEW
+CRITICAL
+HIGH
+MEDIUM
+LOW
+INFORMATIONAL
+1
+1
+1
+1
+4
+IMPACT
+LIKELIHOOD
+(HAL-03)
+(HAL-01)
+(HAL-02)
+(HAL-04)
+(HAL-05)
+(HAL-06)
+(HAL-07)
+(HAL-08)
+11
+EXECUTIVE OVERVIEW
+
+
+--- Page 13 ---
+SECURITY ANALYSIS
+RISK LEVEL
+REMEDIATION DATE
+HAL-01 - REWARDS WITHDRAWAL WITHOUT
+FEES CHARGING IS POSSIBLE
+Critical
+SOLVED - 08/22/2022
+HAL-02 - OPERATORS FAVORING DUE TO
+INCORRECT USE OF BLOCKHASH
+High
+SOLVED - 08/22/2022
+HAL-03 - ADDING VAST NUMBER OF
+OPERATORS CAN DOS DEPOSIT
+FUNCTIONALITY
+Medium
+SOLVED - 08/23/2022
+HAL-04 - LACK OF TRANSFER-OWNERSHIP
+PATTERN
+Low
+SOLVED - 08/22/2022
+HAL-05 - STAKINGCONTRACT LACKS FEES
+VALIDATION IN INITIALIZE FUNCTION
+Informational
+SOLVED - 08/22/2022
+HAL-06 - UNUSED ERROR AND FUNCTIONS
+DECLARED
+Informational
+SOLVED - 08/24/2022
+HAL-07 - LOW LEVEL CALL IN USE
+Informational
+ACKNOWLEDGED
+HAL-08 - LIMIT INCREASE FOR
+DEACTIVATED OPERATOR IS POSSIBLE
+Informational
+SOLVED - 08/22/2022
+12
+EXECUTIVE OVERVIEW
+
+
+--- Page 14 ---
+13
+FINDINGS & TECH
+DETAILS
+
+
+--- Page 15 ---
+3.1 (HAL-01) REWARDS WITHDRAWAL
+WITHOUT FEES CHARGING IS POSSIBLE -
+CRITICAL
+Description:
+The ConsensusLayerFeeDispatcher contract can be used to receive the
+validator’s rewards and split them with a node operator using the dispatch
+function.
+The contract calculates the fees only if the contract’s balance is above
+32 ETH or below 16 ETH. As a result, no fees are charged if the balance
+is between 16 and 32 ETH.
+The contract’s algorithm assumes that a balance below 16 ETH contains
+only rewards. The balance between 16 ether and 32 ETH contains slashed
+and decreased 32 ETH that was initially deposited. The balance above 32
+ETH contains rewards and 32 ETH that was initially deposited, but the
+validator exited.
+Due to receive() and fallback() functions implementation, it is not
+possible to send ETH to this contract in traditional way.
+Listing 1: ConsensusLayerFeeDispatcher.sol (Lines 71-77)
+57 /// @notice Performs a withdrawal on this contract 's balance
+58
+function dispatch(bytes32 _publicKeyRoot) external payable {
+59
+uint256 balance = address(this).balance; // this has taken
+ë
+into account msg.value
+60
+if (balance == 0) {
+61
+revert ZeroBalanceWithdrawal ();
+62
+}
+63
+IStakingContractFeeDetails stakingContract =
+ë IStakingContractFeeDetails(
+64
+STAKING_CONTRACT_ADDRESS_SLOT.getAddress ()
+65
+);
+66
+address withdrawer = stakingContract.
+ë getWithdrawerFromPublicKeyRoot(_publicKeyRoot);
+67
+address operator = stakingContract.getOperatorFeeRecipient
+14
+FINDINGS & TECH DETAILS
+
+
+--- Page 16 ---
+ë (_publicKeyRoot);
+68
+address treasury = stakingContract.getTreasury ();
+69
+uint256 globalFee;
+70
+71
+if (balance >= 32 ether) {
+72
+// withdrawing a healthy & exited validator
+73
+globalFee = (( balance - 32 ether) * stakingContract.
+ë getGlobalFee ()) / BASIS_POINTS;
+74
+} else if (balance <= 16 ether) {
+75
+// withdrawing from what looks like skimming
+76
+globalFee = (balance * stakingContract.getGlobalFee ())
+ë
+/ BASIS_POINTS;
+77
+}
+78
+79
+uint256 operatorFee = (globalFee * stakingContract.
+ë getOperatorFee ()) / BASIS_POINTS;
+80
+81
+(bool status , bytes memory data) = withdrawer.call{value:
+ë balance - globalFee }("");
+82
+if (status == false) {
+83
+revert WithdrawerReceiveError(data);
+84
+}
+85
+if (globalFee > 0) {
+86
+(status , data) = treasury.call{value: globalFee -
+ë operatorFee }("");
+87
+if (status == false) {
+88
+revert FeeRecipientReceiveError(data);
+89
+}
+90
+}
+91
+if (operatorFee > 0) {
+92
+(status , data) = operator.call{value: operatorFee }("")
+ë ;
+93
+if (status == false) {
+94
+revert TreasuryReceiveError(data);
+95
+}
+96
+}
+97
+emit Withdrawal(withdrawer , operator , balance - globalFee ,
+ë
+operatorFee , globalFee - operatorFee);
+98
+}
+The solution architecture assumes that dispatch function should be called
+by the FeeRecipient contract to withdraw rewards. This contract receives
+all rewards for a particular validator from the protocol.
+15
+FINDINGS & TECH DETAILS
+
+
+--- Page 17 ---
+Listing 2: FeeRecipient.sol (Lines 71-77)
+57
+/// @notice Triggers a withdrawal by sending its funds + its
+ë public key root to the dispatcher
+58
+/// @dev Can be called by any wallet as recipients are not
+ë parameters
+59
+function withdraw () external {
+60
+dispatcher.dispatch{value: address(this).balance }(
+ë publicKeyRoot);
+61
+}
+The FeeRecipient contract is dynamically deployed and initialized by the
+StakingContract contract upon rewards withdrawal.
+Listing 3: StakingContract.sol (Line 956)
+943
+function _deployAndWithdraw(
+944
+bytes calldata _publicKey ,
+945
+uint256 _prefix ,
+946
+address _dispatcher
+947
+) internal {
+948
+bytes32 publicKeyRoot = _getPubKeyRoot(_publicKey);
+949
+bytes32 feeRecipientSalt = sha256(abi.encodePacked(_prefix
+ë , publicKeyRoot));
+950
+address implementation = StakingContractStorageLib.
+ë getFeeRecipientImplementation ();
+951
+address feeRecipientAddress = Clones.
+ë predictDeterministicAddress(implementation , feeRecipientSalt);
+952
+if (feeRecipientAddress.code.length == 0) {
+953
+Clones.cloneDeterministic(implementation ,
+ë feeRecipientSalt);
+954
+IFeeRecipient(feeRecipientAddress).init(_dispatcher ,
+ë publicKeyRoot);
+955
+}
+956
+IFeeRecipient(feeRecipientAddress).withdraw ();
+957
+}
+The assessment revealed that it is possible to send some funds to the
+FeeRecipient contract before withdrawal, so the total balance is between
+16 and 32 ether, thus validator’s rewards can be collected without paying
+fees and the amount sent to increase FeeRecipient balance will be returned.
+16
+FINDINGS & TECH DETAILS
+
+
+--- Page 18 ---
+The maximum fee values can be set to 10% of the rewards.
+It is worth mentioning that it is not possible to totally prevent sending
+ether to the contracts (Sending and Receiving Ether).
+Proof of Concept:
+To present the issue, two use cases were prepared, one positive and one
+negative.
+Scenario 1 - the positive:
+1.
+All necessary contracts are deployed and initialized:
+Treasury,
+ConsensusLayerFeeDispatcher, ExecutionLayerFeeDispatcher, FeeRecipient,
+StakingContract.
+2. Global fee is set to 1000 and the operator fee is set to 2000.
+3. At least one operator and one validator are set. Operator limits are
+increased.
+4.
+Through getCLFeeRecipient the address of the FeeRecipient contract
+must be known.
+5.
+To simulate protocol,
+rewards,
+send 16 ETH to the FeeRecipient
+contract.
+6. Using withdrawCLFee withdraw rewards and charge fees.
+7. Observe that the rewards’ receiver got 14.4 ETH, whereas the operator
+got 0.32 ether and the treasure got 1.28 ether.
+17
+FINDINGS & TECH DETAILS
+
+
+--- Page 19 ---
+Scenario 2 - the negative:
+1.
+All necessary contracts are deployed and initialized:
+Treasury,
+ConsensusLayerFeeDispatcher, ExecutionLayerFeeDispatcher, FeeRecipient,
+StakingContract.
+2. Global fee is set to 1000 and the operator fee is set to 2000.
+3. At least one operator and one validator are set. Operator limits are
+increased.
+4. By means of getCLFeeRecipient the address of the FeeRecipient contract
+must be known.
+5.
+To simulate protocol,
+rewards,
+send 16 ETH to the FeeRecipient
+contract.
+6. As reward receiver, send 1 ether to the FeeRecipient contract. Note
+that the contract’s balance is above 16 ETH.
+7. By means of withdrawCLFee withdraw rewards and charge fees.
+8. Observe that the rewards’ receiver got 17 ether (including the 1 ether
+sent in step 6) whereas the operator and treasure got no ether at all.
+Note that this is 1.5 ether more than it was supposed to be distributed.
+Risk Level:
+Likelihood - 5
+18
+FINDINGS & TECH DETAILS
+
+
+--- Page 20 ---
+Impact - 5
+Recommendation:
+At
+the
+point
+of
+conducting
+this
+security
+assessment,
+the
+way
+of
+validator’s rewards send by the protocol is still uncertain; therefore
+it
+is
+not
+possible
+to
+propose
+any
+sufficient
+recommendation.
+The
+solution architecture change should be strongly considered, providing a
+less permissionless flow of the withdrawals.
+Remediation Plan:
+SOLVED:
+The
+Kiln.fi team
+fixed
+this
+issue
+in
+the
+commit
+a322b95726835c9025c2b5b68129d34a00d111d6:
+the
+functionality
+is
+presently disabled.
+The functionality will be enabled and fine-tuned
+when Ethereum 2.0 specification is finalized.
+19
+FINDINGS & TECH DETAILS
+
+
+--- Page 21 ---
+3.2 (HAL-02) OPERATORS FAVORING DUE
+TO INCORRECT USE OF BLOCKHASH - HIGH
+Description:
+In the StakingContract contract, the function _depositOnThreeOrMoreOperators
+() is used to randomly select operators for deposit:
+Listing 4: StakingContract.sol (Line 791)
+783 function _depositOnThreeOrMoreOperators(
+784
+address _withdrawer ,
+785
+uint256 _depositCount ,
+786
+uint256 _totalAvailableValidators ,
+787
+StakingContractStorageLib.OperatorsSlot storage _operators
+788
+) internal {
+789
+uint256 operatorCount = _operators.value.length;
+790
+uint8 optimusPrime = _getClosestPrimeAbove(uint8(
+ë operatorCount));
+791
+bytes32 blockHash = blockhash(block.number); // weak
+ë random number as it's not a security issue
+792
+793
+ValidatorAllocationCache [] memory vd = new
+ë ValidatorAllocationCache []( operatorCount);
+794
+795
+for (uint256 index; index < _depositCount; ) {
+796
+// Retrieve base index and skip value based on block
+ë hash and current loop index
+797
+(uint8 base , uint8 skip) = _getBaseSkip(blockHash ,
+ë index , optimusPrime);
+798
+// Retrieve two operator indexes pointing to two (or
+ë the same) operator(s) that have at least one available
+799
+// validator key to be used for a deposit. This method
+ë
+considers possible pending deposits from
+800
+// previous loop rounds.
+801
+(uint8 alphaIndex , uint8 betaIndex) =
+ë _getElligibleOperators(base , skip , optimusPrime , vd);
+802
+803
+if (alphaIndex == betaIndex) {
+20
+FINDINGS & TECH DETAILS
+
+
+--- Page 22 ---
+804
+// Assign the deposit to the only operator having
+ë available keys
+805
+_assignTemporaryDeposit(alphaIndex , vd);
+806
+} else {
+807
+// Assign the deposit to the operator having the
+ë lowest amount of funded keys
+808
+_assignTemporaryDeposit(_getBestOperator(
+ë alphaIndex , betaIndex , blockHash , vd), vd);
+809
+}
+810
+811
+unchecked {
+812
+++ index;
+813
+}
+814
+}
+815
+816
+// Loop through the cached operator values and deposit any
+ë
+pending deposits
+817
+for (uint256 index; index < vd.length; ) {
+818
+if (vd[index ]. toDeposit > 0) {
+819
+_depositValidatorsOfOperator(index , vd[index ].
+ë toDeposit , _withdrawer);
+820
+}
+821
+unchecked {
+822
+++ index;
+823
+}
+824
+}
+825
+826
+StakingContractStorageLib.setTotalAvailableValidators(
+ë _totalAvailableValidators - _depositCount);
+827
+}
+blockhash(uint blockNumber) only works for the 256 most recent blocks,
+excluding the current block.
+For this reason, blockhash(block.number
+) will always return bytes32(0), and for that reason, it reduces the
+entropy of the _depositOnThreeOrMoreOperators() function while selecting
+the operators.
+The assessment revealed that in the _depositOnThreeOrMoreOperators()
+function, the randomness depends uniquely on the number of registered
+operators (operatorCount parameter).
+As a result, independently of the
+block number, some operators are selected more often than others, until
+they reach the limit of available validators.
+21
+FINDINGS & TECH DETAILS
+
+
+--- Page 23 ---
+Proof of Concept:
+Instance 1
+The image below presents the funded validators of operators.
+Three
+operators were registered with ten validators each. Every block on deposit
+was made. Note that the first two operators were selected multiple times
+before the third operator got validator funded.
+Instance 2
+The image below presents the funded validators of operators. ten operators
+were registered with three validators each. Every block on deposit was
+made.
+Note that the first two operators were selected multiple times
+before the third operator got validator funded.
+22
+FINDINGS & TECH DETAILS
+
+
+--- Page 24 ---
+Risk Level:
+Likelihood - 5
+Impact - 3
+Recommendation:
+It is recommended to use instead blockhash(block.number - 1) in the
+_depositOnThreeOrMoreOperators() function.
+Remediation Plan:
+SOLVED:
+The
+Kiln.fi team
+fixed
+this
+issue
+in
+the
+commit
+9c443e1633bc008e561d0eabdce2d3a5f090c0af: the _depositOnThreeOrMoreOperators
+() function is now using blockhash(block.number - 1).
+23
+FINDINGS & TECH DETAILS
+
+
+--- Page 25 ---
+3.3 (HAL-03) ADDING VAST NUMBER OF
+OPERATORS CAN DOS DEPOSIT
+FUNCTIONALITY - MEDIUM
+Description:
+In the StakingContract contract, there is a possibility to register
+multiple operators by the contract’s admin (addOperator function). Then,
+while a user makes a deposit, the selection algorithm is used to choose the
+operator and its validators. To introduce randomness, among the others,
+the algorithm uses prime numbers - picking one based on the number of
+registered operators (_getClosestPrimeAbove function).
+Listing 5: StakingContract.sol
+275
+function addOperator(address _operatorAddress , address
+ë _feeRecipientAddress) external onlyAdmin returns (uint256) {
+276
+StakingContractStorageLib.OperatorsSlot storage operators
+ë = StakingContractStorageLib.getOperators ();
+277
+StakingContractStorageLib.OperatorInfo memory newOperator;
+278
+newOperator.operator = _operatorAddress;
+279
+newOperator.feeRecipient = _feeRecipientAddress;
+280
+operators.value.push(newOperator);
+281
+return operators.value.length - 1;
+282
+}
+The addOperator function does not limit the total number of operators that
+can be added, whereas _getClosestPrimeAbove function assumes that no more
+than 251 operators should be registered; otherwise the function always
+reverts with InvalidValidatorCount error. The operator, once registered,
+can’t be removed, only deactivated.
+As a result, users won’t be able to make deposits, when 252 or more
+operators are registered.
+24
+FINDINGS & TECH DETAILS
+
+
+--- Page 26 ---
+Listing 6: StakingContract.sol (Line 919)
+850 function _primes () internal pure returns (uint8 [54] memory primes)
+ë
+{
+851
+primes = [
+852
+2,
+853
+3,
+854
+5,
+855
+7,
+856
+11,
+857
+13,
+858
+17,
+859
+19,
+860
+23,
+861
+29,
+862
+31,
+863
+37,
+864
+41,
+865
+43,
+866
+47,
+867
+53,
+868
+59,
+869
+61,
+870
+67,
+871
+71,
+872
+73,
+873
+79,
+874
+83,
+875
+89,
+876
+97,
+877
+101,
+878
+103,
+879
+107,
+880
+109,
+881
+113,
+882
+127,
+883
+131,
+884
+137,
+885
+139,
+886
+149,
+887
+151,
+888
+157,
+889
+163,
+890
+167,
+891
+173,
+25
+FINDINGS & TECH DETAILS
+
+
+--- Page 27 ---
+892
+179,
+893
+181,
+894
+191,
+895
+193,
+896
+197,
+897
+199,
+898
+211,
+899
+223,
+900
+227,
+901
+229,
+902
+233,
+903
+239,
+904
+241,
+905
+251
+906
+];
+907
+}
+908
+909
+function _getClosestPrimeAbove(uint8 _count) internal pure
+ë returns (uint8) {
+910
+uint8 [54] memory primes = _primes ();
+911
+for (uint256 i; i < primes.length; ) {
+912
+if (primes[i] >= _count) {
+913
+return primes[i];
+914
+}
+915
+unchecked {
+916
+++i;
+917
+}
+918
+}
+919
+revert InvalidValidatorCount ();
+920
+}
+Proof of Concept:
+1. All necessary contracts are deployed and initialized:
+Treasury,
+ConsensusLayerFeeDispatcher,
+ExecutionLayerFeeDispatcher,
+FeeRecipient, StakingContract.
+2. Add 252 operators with validators. Operators’ limits are increased.
+3. Attempt to make a deposit of 32 ethers.
+4. Observe that the transaction reverts.
+26
+FINDINGS & TECH DETAILS
+
+
+--- Page 28 ---
+Risk Level:
+Likelihood - 2
+Impact - 5
+Recommendation:
+It is recommended to either limit the total number of operators that
+can be registered or change the _getClosestPrimeAbove() function to wrap
+around _count parameter, instead of revert.
+Remediation Plan:
+SOLVED:
+The
+Kiln.fi team
+fixed
+this
+issue
+in
+the
+commit
+590f8b43e845ed92a933e02c9298a8f9e8614e4a:
+the
+addOperator()
+function
+allows adding maximally 251 operators.
+27
+FINDINGS & TECH DETAILS
+
+
+--- Page 29 ---
+3.4 (HAL-04) LACK OF TRANSFER
+OWNERSHIP PATTERN - LOW
+Description:
+The current ownership transfer for the StakingContract contract involves
+the current owner calling the setAdmin() function:
+Listing 7: StakingContract.sol
+267
+function setAdmin(address _newAdmin) external onlyAdmin {
+268
+StakingContractStorageLib.setAdmin(_newAdmin);
+269
+}
+If the nominated EOA account is not a valid account, it is entirely
+possible
+that
+the
+owner
+may
+accidentally
+transfer
+ownership
+to
+an
+uncontrolled
+account,
+losing
+the
+access
+to
+all
+functions
+with
+the
+onlyAdmin and onlyActiveOperatorOrAdmin modifiers.
+Additionally,
+the
+Treasury
+contract
+also
+implements
+the
+concept
+of
+ownership;
+however,
+it does not have any functionality that allows
+ownership transfer.
+In case of malicious actor hijacks the account,
+changing the ownership will not be possible.
+Risk Level:
+Likelihood - 2
+Impact - 2
+Recommendation:
+It is recommended to implement a two-step process where the owner nominates
+an account and the nominated account needs to call an acceptOwnership()
+function for the transfer of the ownership to fully succeed. This ensures
+the nominated EOA account is a valid and active account.
+28
+FINDINGS & TECH DETAILS
+
+
+--- Page 30 ---
+Remediation Plan:
+SOLVED:
+The
+Kiln.fi team
+fixed
+this
+issue
+in
+the
+commit
+aff9ae4d58686c4adf388d4bc84c97a598bc86cc:
+the
+transfer-ownership
+pattern is now implemented.
+29
+FINDINGS & TECH DETAILS
+
+
+--- Page 31 ---
+3.5 (HAL-05) STAKINGCONTRACT LACKS
+FEES VALIDATION IN INITIALIZE
+FUNCTION - INFORMATIONAL
+Description:
+In the contract StakingContract it is required to set globalFee and
+operatorFee upon initiliziation process.
+Later on, it is possible to
+update these parameters using setOperatorFee and setGlobalFee functions;
+however, this functionality applies input validation, which is missing
+in initialize_1 function.
+Listing 8: StakingContract.sol
+134
+function initialize_1(
+135
+address _admin ,
+136
+address _treasury ,
+137
+address _depositContract ,
+138
+address _elDispatcher ,
+139
+address _clDispatcher ,
+140
+address _feeRecipientImplementation ,
+141
+uint256 _globalFee ,
+142
+uint256 _operatorFee
+143
+) external init (1) {
+144
+StakingContractStorageLib.setAdmin(_admin);
+145
+StakingContractStorageLib.setTreasury(_treasury);
+146
+StakingContractStorageLib.setGlobalFee(_globalFee);
+147
+StakingContractStorageLib.setOperatorFee(_operatorFee);
+148
+StakingContractStorageLib.setELDispatcher(_elDispatcher);
+149
+StakingContractStorageLib.setCLDispatcher(_clDispatcher);
+150
+StakingContractStorageLib.setDepositContract(
+ë _depositContract);
+151
+StakingContractStorageLib.setFeeRecipientImplementation(
+ë _feeRecipientImplementation);
+152
+}
+30
+FINDINGS & TECH DETAILS
+
+
+--- Page 32 ---
+Listing 9: StakingContract.sol (Lines 355,364)
+352
+/// @notice Change the Operator fee
+353
+/// @param _operatorFee Fee in Basis Point
+354
+function setOperatorFee(uint256 _operatorFee) external
+ë onlyAdmin {
+355
+if (_operatorFee > BASIS_POINTS) {
+356
+revert InvalidFee ();
+357
+}
+358
+StakingContractStorageLib.setOperatorFee(_operatorFee);
+359
+}
+360
+361
+/// @notice Change the Global fee
+362
+/// @param _globalFee Fee in Basis Point
+363
+function setGlobalFee(uint256 _globalFee) external onlyAdmin {
+364
+if (_globalFee > BASIS_POINTS) {
+365
+revert InvalidFee ();
+366
+}
+367
+StakingContractStorageLib.setGlobalFee(_globalFee);
+368
+}
+Risk Level:
+Likelihood - 1
+Impact - 1
+Recommendation:
+It is recommended to apply common validation in initialize_1 function.
+Remediation Plan:
+SOLVED:
+The
+Kiln.fi team
+fixed
+this
+issue
+in
+the
+commit
+02ca8f814c5331b2d59fd5c373dd2eff45538634:
+the
+fees’
+validation
+is now implemented.
+31
+FINDINGS & TECH DETAILS
+
+
+--- Page 33 ---
+3.6 (HAL-06) UNUSED ERROR AND
+FUNCTIONS DECLARED - INFORMATIONAL
+Description:
+In the contract StakingContract the error NotEnoughKeys is declared, but
+it is not used anywhere in the code:
+Listing 10: StakingContract.sol
+29
+error NotEnoughKeys ();
+In the contract FeeRecipientStorageLib multiple functions are declared,
+but they are not used anywhere in the code:
+Listing 11: FeeRecipientStorageLib.sol
+29
+function getUint256(bytes32 position) internal view returns (
+ë uint256 data) {
+30
+assembly {
+31
+data := sload(position)
+32
+}
+33
+}
+34
+35
+function setUint256(bytes32 position , uint256 data) internal {
+36
+assembly {
+37
+sstore(position , data)
+38
+}
+39
+}
+40
+41
+function getAddress(bytes32 position) internal view returns (
+ë address data) {
+42
+assembly {
+43
+data := sload(position)
+44
+}
+45
+}
+46
+47
+function setAddress(bytes32 position , address data) internal {
+48
+assembly {
+49
+sstore(position , data)
+32
+FINDINGS & TECH DETAILS
+
+
+--- Page 34 ---
+50
+}
+51
+}
+52
+53
+function getBytes32(bytes32 position) internal view returns (
+ë bytes32 data) {
+54
+assembly {
+55
+data := sload(position)
+56
+}
+57
+}
+58
+59
+function setBytes32(bytes32 position , bytes32 data) internal {
+60
+assembly {
+61
+sstore(position , data)
+62
+}
+63
+}
+In
+the
+contract
+StakingContractStorageLib
+multiple
+functions
+are
+declared, but they are not used anywhere in the code:
+Listing 12: StakingContractStorageLib.sol
+29
+function getBytes32(bytes32 position) internal view returns (
+ë bytes32 data) {
+30
+assembly {
+31
+data := sload(position)
+32
+}
+33
+}
+34
+35
+function setBytes32(bytes32 position , bytes32 data) internal {
+36
+assembly {
+37
+sstore(position , data)
+38
+}
+39
+}
+Risk Level:
+Likelihood - 1
+Impact - 1
+33
+FINDINGS & TECH DETAILS
+
+
+--- Page 35 ---
+Recommendation:
+It is recommended to remove the unused error and functions declared to
+save some gas.
+Remediation Plan:
+SOLVED:
+The
+Kiln.fi team
+fixed
+this
+issue
+in
+the
+commit
+0f3da06447b46c03fd9103c737d4c72d0d35fcd9:
+unused
+code
+is
+now
+removed. Some parts of the code are reported as false positives.
+34
+FINDINGS & TECH DETAILS
+
+
+--- Page 36 ---
+3.7 (HAL-07) LOW LEVEL CALL IN USE -
+INFORMATIONAL
+Description:
+In the contracts ConsensusLayerFeeDispatcher, ExecutionLayerFeeDispatcher
+and Treasury the low-level function call is being used to transfer ETH.
+This function forwards all available gas upon execution.
+Listing 13: ConsensusLayerFeeDispatcher.sol (Lines 81,86,92)
+58 function dispatch(bytes32 _publicKeyRoot) external payable {
+59
+uint256 balance = address(this).balance; // this has taken
+ë
+into account msg.value
+60
+if (balance == 0) {
+61
+revert ZeroBalanceWithdrawal ();
+62
+}
+63
+IStakingContractFeeDetails stakingContract =
+ë IStakingContractFeeDetails(
+64
+STAKING_CONTRACT_ADDRESS_SLOT.getAddress ()
+65
+);
+66
+address withdrawer = stakingContract.
+ë getWithdrawerFromPublicKeyRoot(_publicKeyRoot);
+67
+address operator = stakingContract.getOperatorFeeRecipient
+ë (_publicKeyRoot);
+68
+address treasury = stakingContract.getTreasury ();
+69
+uint256 globalFee;
+70
+71
+if (balance >= 32 ether) {
+72
+// withdrawing a healthy & exited validator
+73
+globalFee = (( balance - 32 ether) * stakingContract.
+ë getGlobalFee ()) / BASIS_POINTS;
+74
+} else if (balance <= 16 ether) {
+75
+// withdrawing from what looks like skimming
+76
+globalFee = (balance * stakingContract.getGlobalFee ())
+ë
+/ BASIS_POINTS;
+77
+}
+78
+79
+uint256 operatorFee = (globalFee * stakingContract.
+ë getOperatorFee ()) / BASIS_POINTS;
+80
+35
+FINDINGS & TECH DETAILS
+
+
+--- Page 37 ---
+81
+(bool status , bytes memory data) = withdrawer.call{value:
+ë balance - globalFee }("");
+82
+if (status == false) {
+83
+revert WithdrawerReceiveError(data);
+84
+}
+85
+if (globalFee > 0) {
+86
+(status , data) = treasury.call{value: globalFee -
+ë operatorFee }("");
+87
+if (status == false) {
+88
+revert FeeRecipientReceiveError(data);
+89
+}
+90
+}
+91
+if (operatorFee > 0) {
+92
+(status , data) = operator.call{value: operatorFee }("")
+ë ;
+93
+if (status == false) {
+94
+revert TreasuryReceiveError(data);
+95
+}
+96
+}
+97
+emit Withdrawal(withdrawer , operator , balance - globalFee ,
+ë
+operatorFee , globalFee - operatorFee);
+98
+}
+Listing 14: ExecutionLayerFeeDispatcher.sol (Lines 72,77,83)
+58 function dispatch(bytes32 _publicKeyRoot) external payable {
+59
+uint256 balance = address(this).balance;
+60
+if (balance == 0) {
+61
+revert ZeroBalanceWithdrawal ();
+62
+}
+63
+IStakingContractFeeDetails stakingContract =
+ë IStakingContractFeeDetails(
+64
+STAKING_CONTRACT_ADDRESS_SLOT.getAddress ()
+65
+);
+66
+address withdrawer = stakingContract.
+ë getWithdrawerFromPublicKeyRoot(_publicKeyRoot);
+67
+address operator = stakingContract.getOperatorFeeRecipient
+ë (_publicKeyRoot);
+68
+address treasury = stakingContract.getTreasury ();
+69
+uint256 globalFee = (balance * stakingContract.
+ë getGlobalFee ()) / BASIS_POINTS;
+70
+uint256 operatorFee = (globalFee * stakingContract.
+ë getOperatorFee ()) / BASIS_POINTS;
+71
+36
+FINDINGS & TECH DETAILS
+
+
+--- Page 38 ---
+72
+(bool status , bytes memory data) = withdrawer.call{value:
+ë balance - globalFee }("");
+73
+if (status == false) {
+74
+revert WithdrawerReceiveError(data);
+75
+}
+76
+if (globalFee > 0) {
+77
+(status , data) = treasury.call{value: globalFee -
+ë operatorFee }("");
+78
+if (status == false) {
+79
+revert FeeRecipientReceiveError(data);
+80
+}
+81
+}
+82
+if (operatorFee > 0) {
+83
+(status , data) = operator.call{value: operatorFee }("")
+ë ;
+84
+if (status == false) {
+85
+revert TreasuryReceiveError(data);
+86
+}
+87
+}
+88
+emit Withdrawal(withdrawer , operator , balance - globalFee ,
+ë
+operatorFee , globalFee - operatorFee);
+89
+}
+Listing 15: Treasury.sol (Line 88)
+81
+function withdraw(uint256 _amount) external onlyAdmin lock {
+82
+if (_amount > address(this).balance) {
+83
+revert InvalidAmount ();
+84
+}
+85
+86
+for (uint256 idx = 0; idx < beneficiaries.length; ++idx) {
+87
+uint256 amountToTransfer = (_amount * percents[idx]) /
+ë
+BASIS_POINT;
+88
+(bool status , bytes memory data) = beneficiaries[idx].
+ë call{value: amountToTransfer }("");
+89
+if (! status) {
+90
+revert TransferError(data);
+91
+}
+92
+}
+93
+}
+37
+FINDINGS & TECH DETAILS
+
+
+--- Page 39 ---
+Risk Level:
+Likelihood - 1
+Impact - 1
+Recommendation:
+It is recommended to use send or transfer functions to send ETH, which
+forward only 2300 gas stipends, unless complex functionality execution
+is required upon receiving of the ether
+(Members of Address Types).
+Such approach is an additional layer of
+defense in depth techniques, preventing reentrancy issues.
+Remediation Plan:
+ACKNOWLEDGED: The Kiln.fi team acknowledged this issue.
+38
+FINDINGS & TECH DETAILS
+
+
+--- Page 40 ---
+3.8 (HAL-08) LIMIT INCREASE FOR
+DEACTIVATED OPERATOR IS POSSIBLE -
+INFORMATIONAL
+Description:
+In the StakingContract contract, an operator can be deactivated and
+activated again.
+The deactivated operator cannot add/remove validators
+or change the operator’s address. Also, the deactivated operator has a
+limit set to 0.
+However, it was identified that the operator’s limits can be increased
+once again using the setOperatorLimit function, without a prior call
+to the activateOperator function, as the former does not check if the
+operator is deactivated.
+Listing 16: StakingContract.sol (Lines 81,86,92)
+323
+function setOperatorLimit(uint256 _operatorIndex , uint256
+ë _limit) external onlyAdmin {
+324
+StakingContractStorageLib.OperatorsSlot storage operators
+ë = StakingContractStorageLib.getOperators ();
+325
+uint256 publicKeyCount = operators.value[_operatorIndex ].
+ë publicKeys.length;
+326
+if (publicKeyCount < _limit) {
+327
+revert OperatorLimitTooHigh(_limit , publicKeyCount);
+328
+}
+329
+operators.value[_operatorIndex ]. limit = _limit;
+330
+_updateAvailableValidatorCount(_operatorIndex);
+331
+}
+Risk Level:
+Likelihood - 1
+Impact - 1
+39
+FINDINGS & TECH DETAILS
+
+
+--- Page 41 ---
+Recommendation:
+It
+is
+recommended
+to
+check
+if
+an
+operator
+is
+deactivated
+within
+setOperatorLimit() function.
+Remediation Plan:
+SOLVED:
+The
+Kiln.fi team
+fixed
+this
+issue
+in
+the
+commit
+ca554f1efcae9597e080ed03afcae40a4082976e:
+Operator
+activation
+status validation is now implemented.
+40
+FINDINGS & TECH DETAILS
+
+
+--- Page 42 ---
+41
+AUTOMATED TESTING
+
+
+--- Page 43 ---
+4.1 STATIC ANALYSIS REPORT
+Description:
+Halborn used automated testing techniques to enhance the coverage of
+certain areas of the scoped contracts. Among the tools used was Slither,
+a Solidity static analysis framework.
+After Halborn verified all the
+contracts in the repository and was able to compile them correctly
+into their abi and binary formats, Slither was run on the all-scoped
+contracts.
+This tool can statically verify mathematical relationships
+between Solidity variables to detect invalid or inconsistent usage of the
+contracts’ APIs across the entire code-base.
+Slither results:
+BytesLib.sol
+ConsensusLayerFeeDispatcher.sol
+42
+AUTOMATED TESTING
+
+
+--- Page 44 ---
+ExecutionLayerFeeDispatcher.sol
+43
+AUTOMATED TESTING
+
+
+--- Page 45 ---
+FeeRecipient.sol
+FeeRecipientStorageLib.sol
+44
+AUTOMATED TESTING
+
+
+--- Page 46 ---
+StakingContract.sol
+45
+AUTOMATED TESTING
+
+
+--- Page 47 ---
+46
+AUTOMATED TESTING
+
+
+--- Page 48 ---
+StakingContractStorageLib.sol
+47
+AUTOMATED TESTING
+
+
+--- Page 49 ---
+Treasury.sol
+48
+AUTOMATED TESTING
+
+
+--- Page 50 ---
+TUPProxy.sol
+49
+AUTOMATED TESTING
+
+
+--- Page 51 ---
+UintLib.sol
+• The sending of eth to arbitrary user findings are false positives.
+• The performing a multiplication on the result of division findings
+are false positives.
+• The uses of dangerous strict equality findings are false positives.
+• The lacks of zero-check findings are false positives.
+• The uses inline assembly findings are false positives.
+• The comparison to boolean constant findings are false positives
+• The necessary a version too recent to be trusted findings are false
+positives.
+• The external calls inside a loop findings are false positives.
+• The never initialized local variables findings are false positives.
+• The uses literals with too many digits findings are false positives.
+• The modifier does not always execute _; findings are false positives.
+• The
+ignore
+return
+value
+by
+Clones.cloneDeterministic
+in
+StakingContract is false positive.
+• The uses of weak PRNG findings are valid, however, no strong source
+of randomness is required in the selection of operators.
+• The
+reentrency
+findings
+in
+ConsensusLayerFeeDispatcher.sol,
+ExecutionLayerFeeDispatcher.sol
+are
+theoretically
+possible,
+however, these functions withdraw all balance at once to predefined
+addresses.
+• The reentrency findings in StakingContract is false positive.
+• The low level call findings are reported in LOW LEVEL CALL IN USE.
+• The findings related to unused pieces of code are reported in UNUSED
+ERROR AND FUNCTIONS DECLARED.
+• Several informational issues related to solidity naming convention
+were identified.
+50
+AUTOMATED TESTING
+
+
+--- Page 52 ---
+• Lack of zero-check of contract address is no longer considered an
+issue. Since Solidity, 0.5.0 msg.data length is being checked.
+• Some findings relate to ERC1967Proxy.sol contract it-self.
+• No major issues were found by Slither.
+51
+AUTOMATED TESTING
+
+
+--- Page 53 ---
+4.2 AUTOMATED SECURITY SCAN
+Description:
+Halborn used automated security scanners to assist with detection of
+well-known security issues, and to identify low-hanging fruits on the
+targets for this engagement. Among the tools used was MythX, a security
+analysis service for Ethereum smart contracts.
+MythX performed a scan
+on all the contracts and sent the compiled results to the analyzers to
+locate any vulnerabilities.
+MythX results:
+BytesLib.sol
+ConsensusLayerFeeDispatcher.sol
+ExecutionLayerFeeDispatcher.sol
+52
+AUTOMATED TESTING
+
+
+--- Page 54 ---
+FeeRecipient.sol
+FeeRecipientStorageLib.sol
+StakingContract.sol
+StakingContractStorageLib.sol
+53
+AUTOMATED TESTING
+
+
+--- Page 55 ---
+Treasury.sol
+UintLib.sol
+• The floating pragma findings are false positives.
+• All
+findings
+in
+Treasury.sol,
+ExecutionLayerFeeDispatcher.sol,
+ConsensusLayerFeeDispatcher.sol contracts are false positives.
+• The
+reentrancy
+finding
+in
+FeeRecipient.sol
+is
+theoretically
+possible, however, this function withdraws all balance at once to
+predefined addresses.
+• The DoS with Failed Call finding in StakingContract.sol is false
+positive.
+• The Uninitialized Storage Pointer findings are false positives.
+• The Integer Overflow and Underflow findings are false positives.
+• Some findings relate to ERC1967Proxy.sol contract itself.
+• The findings related to blockhash and block.number usage are reported
+in INCORRECT USE OF BLOCKHASH.
+• No major issues were discovered by Mythx software.
+54
+AUTOMATED TESTING
+
+
+--- Page 56 ---
+THANK YOU FOR CHOOSING

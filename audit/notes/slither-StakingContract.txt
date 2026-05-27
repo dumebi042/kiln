@@ -1,0 +1,248 @@
+'forge clean' running (wd: /Users/dumebi/Downloads/Projects/bounty/kiln)
+'forge config --json' running
+'forge build --build-info src/contracts/StakingContract.sol' running (wd: /Users/dumebi/Downloads/Projects/bounty/kiln)
+INFO:Detectors:
+Detector: uninitialized-local
+StakingContract.addOperator(address,address).newOperator (src/contracts/StakingContract.sol#394) is a local variable never initialized
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#uninitialized-local-variables
+INFO:Detectors:
+Detector: unused-return
+StakingContract._deployAndWithdraw(bytes,uint256,address) (src/contracts/StakingContract.sol#938-952) ignores return value by Clones.cloneDeterministic(implementation,feeRecipientSalt) (src/contracts/StakingContract.sol#948)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unused-return
+INFO:Detectors:
+Detector: calls-loop
+StakingContract._depositValidator(bytes,bytes32,bytes,bytes32) (src/contracts/StakingContract.sol#859-891) has external calls inside a loop: IDepositContract(StakingContractStorageLib.getDepositContract()).deposit{value: DEPOSIT_SIZE}(_publicKey,abi.encodePacked(_withdrawalCredentials),_signature,depositDataRoot) (src/contracts/StakingContract.sol#881-886)
+	Calls stack containing the loop:
+		StakingContract.deposit()
+		StakingContract._deposit()
+		StakingContract._depositOnOneOperator(uint256,uint256)
+		StakingContract._depositValidatorsOfOperator(uint256,uint256)
+StakingContract._depositValidator(bytes,bytes32,bytes,bytes32) (src/contracts/StakingContract.sol#859-891) has external calls inside a loop: IDepositContract(StakingContractStorageLib.getDepositContract()).deposit{value: DEPOSIT_SIZE}(_publicKey,abi.encodePacked(_withdrawalCredentials),_signature,depositDataRoot) (src/contracts/StakingContract.sol#881-886)
+	Calls stack containing the loop:
+		StakingContract.receive()
+		StakingContract._deposit()
+		StakingContract._depositOnOneOperator(uint256,uint256)
+		StakingContract._depositValidatorsOfOperator(uint256,uint256)
+StakingContract._deployAndWithdraw(bytes,uint256,address) (src/contracts/StakingContract.sol#938-952) has external calls inside a loop: IFeeRecipient(feeRecipientAddress).init(_dispatcher,publicKeyRoot) (src/contracts/StakingContract.sol#949)
+	Calls stack containing the loop:
+		StakingContract.batchWithdrawELFee(bytes)
+StakingContract._deployAndWithdraw(bytes,uint256,address) (src/contracts/StakingContract.sol#938-952) has external calls inside a loop: IFeeRecipient(feeRecipientAddress).withdraw() (src/contracts/StakingContract.sol#951)
+	Calls stack containing the loop:
+		StakingContract.batchWithdrawELFee(bytes)
+StakingContract._deployAndWithdraw(bytes,uint256,address) (src/contracts/StakingContract.sol#938-952) has external calls inside a loop: IFeeRecipient(feeRecipientAddress).init(_dispatcher,publicKeyRoot) (src/contracts/StakingContract.sol#949)
+	Calls stack containing the loop:
+		StakingContract.batchWithdrawCLFee(bytes)
+StakingContract._deployAndWithdraw(bytes,uint256,address) (src/contracts/StakingContract.sol#938-952) has external calls inside a loop: IFeeRecipient(feeRecipientAddress).withdraw() (src/contracts/StakingContract.sol#951)
+	Calls stack containing the loop:
+		StakingContract.batchWithdrawCLFee(bytes)
+StakingContract._deployAndWithdraw(bytes,uint256,address) (src/contracts/StakingContract.sol#938-952) has external calls inside a loop: IFeeRecipient(feeRecipientAddress).init(_dispatcher,publicKeyRoot) (src/contracts/StakingContract.sol#949)
+	Calls stack containing the loop:
+		StakingContract.batchWithdraw(bytes)
+StakingContract._deployAndWithdraw(bytes,uint256,address) (src/contracts/StakingContract.sol#938-952) has external calls inside a loop: IFeeRecipient(feeRecipientAddress).withdraw() (src/contracts/StakingContract.sol#951)
+	Calls stack containing the loop:
+		StakingContract.batchWithdraw(bytes)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation/#calls-inside-a-loop
+INFO:Detectors:
+Detector: reentrancy-events
+Reentrancy in StakingContract._depositValidatorsOfOperator(uint256,uint256) (src/contracts/StakingContract.sol#827-853):
+	External calls:
+	- _depositValidator(publicKey,pubkeyRoot,signature,withdrawalCredentials) (src/contracts/StakingContract.sol#840)
+		- IDepositContract(StakingContractStorageLib.getDepositContract()).deposit{value: DEPOSIT_SIZE}(_publicKey,abi.encodePacked(_withdrawalCredentials),_signature,depositDataRoot) (src/contracts/StakingContract.sol#881-886)
+	Event emitted after the call(s):
+	- Deposit(msg.sender,msg.sender,publicKey,signature) (src/contracts/StakingContract.sol#842)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-4
+INFO:Detectors:
+Detector: assembly
+Clones.clone(address) (@openzeppelin/contracts/proxy/Clones.sol#25-34) uses assembly
+	- INLINE ASM (@openzeppelin/contracts/proxy/Clones.sol#26-32)
+Clones.cloneDeterministic(address,bytes32) (@openzeppelin/contracts/proxy/Clones.sol#43-52) uses assembly
+	- INLINE ASM (@openzeppelin/contracts/proxy/Clones.sol#44-50)
+Clones.predictDeterministicAddress(address,bytes32,address) (@openzeppelin/contracts/proxy/Clones.sol#57-72) uses assembly
+	- INLINE ASM (@openzeppelin/contracts/proxy/Clones.sol#62-71)
+BytesLib.concat(bytes,bytes) (src/contracts/libs/BytesLib.sol#6-78) uses assembly
+	- INLINE ASM (src/contracts/libs/BytesLib.sol#9-75)
+BytesLib.slice(bytes,uint256,uint256) (src/contracts/libs/BytesLib.sol#80-143) uses assembly
+	- INLINE ASM (src/contracts/libs/BytesLib.sol#90-140)
+StakingContractStorageLib.getUint256(bytes32) (src/contracts/libs/StakingContractStorageLib.sol#5-9) uses assembly
+	- INLINE ASM (src/contracts/libs/StakingContractStorageLib.sol#6-8)
+StakingContractStorageLib.setUint256(bytes32,uint256) (src/contracts/libs/StakingContractStorageLib.sol#11-15) uses assembly
+	- INLINE ASM (src/contracts/libs/StakingContractStorageLib.sol#12-14)
+StakingContractStorageLib.getAddress(bytes32) (src/contracts/libs/StakingContractStorageLib.sol#17-21) uses assembly
+	- INLINE ASM (src/contracts/libs/StakingContractStorageLib.sol#18-20)
+StakingContractStorageLib.setAddress(bytes32,address) (src/contracts/libs/StakingContractStorageLib.sol#23-27) uses assembly
+	- INLINE ASM (src/contracts/libs/StakingContractStorageLib.sol#24-26)
+StakingContractStorageLib.getBool(bytes32) (src/contracts/libs/StakingContractStorageLib.sol#29-33) uses assembly
+	- INLINE ASM (src/contracts/libs/StakingContractStorageLib.sol#30-32)
+StakingContractStorageLib.setBool(bytes32,bool) (src/contracts/libs/StakingContractStorageLib.sol#35-39) uses assembly
+	- INLINE ASM (src/contracts/libs/StakingContractStorageLib.sol#36-38)
+StakingContractStorageLib.getOperators() (src/contracts/libs/StakingContractStorageLib.sol#125-130) uses assembly
+	- INLINE ASM (src/contracts/libs/StakingContractStorageLib.sol#127-129)
+StakingContractStorageLib.getValidatorsFundingInfo(uint256) (src/contracts/libs/StakingContractStorageLib.sol#155-168) uses assembly
+	- INLINE ASM (src/contracts/libs/StakingContractStorageLib.sol#159-161)
+StakingContractStorageLib.setValidatorsFundingInfo(uint256,uint32,uint32) (src/contracts/libs/StakingContractStorageLib.sol#170-187) uses assembly
+	- INLINE ASM (src/contracts/libs/StakingContractStorageLib.sol#178-180)
+StakingContractStorageLib.getWithdrawers() (src/contracts/libs/StakingContractStorageLib.sol#213-218) uses assembly
+	- INLINE ASM (src/contracts/libs/StakingContractStorageLib.sol#215-217)
+StakingContractStorageLib.getOperatorIndexPerValidator() (src/contracts/libs/StakingContractStorageLib.sol#236-241) uses assembly
+	- INLINE ASM (src/contracts/libs/StakingContractStorageLib.sol#238-240)
+StakingContractStorageLib.getExitRequestMap() (src/contracts/libs/StakingContractStorageLib.sol#340-345) uses assembly
+	- INLINE ASM (src/contracts/libs/StakingContractStorageLib.sol#342-344)
+StakingContractStorageLib.getWithdrawnMap() (src/contracts/libs/StakingContractStorageLib.sol#357-362) uses assembly
+	- INLINE ASM (src/contracts/libs/StakingContractStorageLib.sol#359-361)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#assembly-usage
+INFO:Detectors:
+Detector: boolean-equal
+StakingContract.getOperatorFeeRecipient(bytes32) (src/contracts/StakingContract.sol#247-256) compares to a boolean constant:
+	-StakingContractStorageLib.getOperatorIndexPerValidator().value[pubKeyRoot].enabled == false (src/contracts/StakingContract.sol#248)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#boolean-equality
+INFO:Detectors:
+Detector: pragma
+2 different versions of Solidity are used:
+	- Version constraint ^0.8.0 is used by:
+		-^0.8.0 (@openzeppelin/contracts/proxy/Clones.sol#4)
+	- Version constraint >=0.8.10 is used by:
+		->=0.8.10 (src/contracts/StakingContract.sol#2)
+		->=0.8.10 (src/contracts/interfaces/IDepositContract.sol#2)
+		->=0.8.10 (src/contracts/interfaces/IFeeRecipient.sol#2)
+		->=0.8.10 (src/contracts/libs/BytesLib.sol#2)
+		->=0.8.10 (src/contracts/libs/StakingContractStorageLib.sol#2)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#different-pragma-directives-are-used
+INFO:Detectors:
+Detector: dead-code
+StakingContract._min(uint256,uint256) (src/contracts/StakingContract.sol#917-922) is never used and should be removed
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#dead-code
+INFO:Detectors:
+Detector: solc-version
+Version constraint ^0.8.0 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)
+	- FullInlinerNonExpressionSplitArgumentEvaluationOrder
+	- MissingSideEffectsOnSelectorAccess
+	- AbiReencodingHeadOverflowWithStaticArrayCleanup
+	- DirtyBytesArrayToStorage
+	- DataLocationChangeInInternalOverride
+	- NestedCalldataArrayAbiReencodingSizeValidation
+	- SignedImmutables
+	- ABIDecodeTwoDimensionalArrayMemory
+	- KeccakCaching.
+It is used by:
+	- ^0.8.0 (@openzeppelin/contracts/proxy/Clones.sol#4)
+Version constraint >=0.8.10 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)
+	- VerbatimInvalidDeduplication
+	- FullInlinerNonExpressionSplitArgumentEvaluationOrder
+	- MissingSideEffectsOnSelectorAccess
+	- AbiReencodingHeadOverflowWithStaticArrayCleanup
+	- DirtyBytesArrayToStorage
+	- DataLocationChangeInInternalOverride
+	- NestedCalldataArrayAbiReencodingSizeValidation.
+It is used by:
+	- >=0.8.10 (src/contracts/StakingContract.sol#2)
+	- >=0.8.10 (src/contracts/interfaces/IDepositContract.sol#2)
+	- >=0.8.10 (src/contracts/interfaces/IFeeRecipient.sol#2)
+	- >=0.8.10 (src/contracts/libs/BytesLib.sol#2)
+	- >=0.8.10 (src/contracts/libs/StakingContractStorageLib.sol#2)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity
+INFO:Detectors:
+Detector: naming-convention
+Function StakingContract.initialize_1(address,address,address,address,address,address,uint256,uint256,uint256,uint256) (src/contracts/StakingContract.sol#151-186) is not in mixedCase
+Parameter StakingContract.initialize_1(address,address,address,address,address,address,uint256,uint256,uint256,uint256)._admin (src/contracts/StakingContract.sol#152) is not in mixedCase
+Parameter StakingContract.initialize_1(address,address,address,address,address,address,uint256,uint256,uint256,uint256)._treasury (src/contracts/StakingContract.sol#153) is not in mixedCase
+Parameter StakingContract.initialize_1(address,address,address,address,address,address,uint256,uint256,uint256,uint256)._depositContract (src/contracts/StakingContract.sol#154) is not in mixedCase
+Parameter StakingContract.initialize_1(address,address,address,address,address,address,uint256,uint256,uint256,uint256)._elDispatcher (src/contracts/StakingContract.sol#155) is not in mixedCase
+Parameter StakingContract.initialize_1(address,address,address,address,address,address,uint256,uint256,uint256,uint256)._clDispatcher (src/contracts/StakingContract.sol#156) is not in mixedCase
+Parameter StakingContract.initialize_1(address,address,address,address,address,address,uint256,uint256,uint256,uint256)._feeRecipientImplementation (src/contracts/StakingContract.sol#157) is not in mixedCase
+Parameter StakingContract.initialize_1(address,address,address,address,address,address,uint256,uint256,uint256,uint256)._globalFee (src/contracts/StakingContract.sol#158) is not in mixedCase
+Parameter StakingContract.initialize_1(address,address,address,address,address,address,uint256,uint256,uint256,uint256)._operatorFee (src/contracts/StakingContract.sol#159) is not in mixedCase
+Function StakingContract.initialize_2(uint256,uint256) (src/contracts/StakingContract.sol#188-197) is not in mixedCase
+Parameter StakingContract.setWithdrawerCustomizationEnabled(bool)._enabled (src/contracts/StakingContract.sol#201) is not in mixedCase
+Parameter StakingContract.setTreasury(address)._newTreasury (src/contracts/StakingContract.sol#214) is not in mixedCase
+Parameter StakingContract.getELFeeRecipient(bytes)._publicKey (src/contracts/StakingContract.sol#236) is not in mixedCase
+Parameter StakingContract.getCLFeeRecipient(bytes)._publicKey (src/contracts/StakingContract.sol#242) is not in mixedCase
+Parameter StakingContract.getWithdrawer(bytes)._publicKey (src/contracts/StakingContract.sol#261) is not in mixedCase
+Parameter StakingContract.getWithdrawerFromPublicKeyRoot(bytes32)._publicKeyRoot (src/contracts/StakingContract.sol#268) is not in mixedCase
+Parameter StakingContract.getExitRequestedFromRoot(bytes32)._publicKeyRoot (src/contracts/StakingContract.sol#275) is not in mixedCase
+Parameter StakingContract.getWithdrawnFromPublicKeyRoot(bytes32)._publicKeyRoot (src/contracts/StakingContract.sol#282) is not in mixedCase
+Parameter StakingContract.getEnabledFromPublicKeyRoot(bytes32)._publicKeyRoot (src/contracts/StakingContract.sol#288) is not in mixedCase
+Parameter StakingContract.toggleWithdrawnFromPublicKeyRoot(bytes32)._publicKeyRoot (src/contracts/StakingContract.sol#294) is not in mixedCase
+Parameter StakingContract.getOperator(uint256)._operatorIndex (src/contracts/StakingContract.sol#308) is not in mixedCase
+Parameter StakingContract.getValidator(uint256,uint256)._operatorIndex (src/contracts/StakingContract.sol#341) is not in mixedCase
+Parameter StakingContract.getValidator(uint256,uint256)._validatorIndex (src/contracts/StakingContract.sol#341) is not in mixedCase
+Parameter StakingContract.transferOwnership(address)._newAdmin (src/contracts/StakingContract.sol#366) is not in mixedCase
+Parameter StakingContract.addOperator(address,address)._operatorAddress (src/contracts/StakingContract.sol#392) is not in mixedCase
+Parameter StakingContract.addOperator(address,address)._feeRecipientAddress (src/contracts/StakingContract.sol#392) is not in mixedCase
+Parameter StakingContract.setOperatorAddresses(uint256,address,address)._operatorIndex (src/contracts/StakingContract.sol#413) is not in mixedCase
+Parameter StakingContract.setOperatorAddresses(uint256,address,address)._operatorAddress (src/contracts/StakingContract.sol#414) is not in mixedCase
+Parameter StakingContract.setOperatorAddresses(uint256,address,address)._feeRecipientAddress (src/contracts/StakingContract.sol#415) is not in mixedCase
+Parameter StakingContract.setWithdrawer(bytes,address)._publicKey (src/contracts/StakingContract.sol#430) is not in mixedCase
+Parameter StakingContract.setWithdrawer(bytes,address)._newWithdrawer (src/contracts/StakingContract.sol#430) is not in mixedCase
+Parameter StakingContract.setOperatorLimit(uint256,uint256,uint256)._operatorIndex (src/contracts/StakingContract.sol#456) is not in mixedCase
+Parameter StakingContract.setOperatorLimit(uint256,uint256,uint256)._limit (src/contracts/StakingContract.sol#457) is not in mixedCase
+Parameter StakingContract.setOperatorLimit(uint256,uint256,uint256)._snapshot (src/contracts/StakingContract.sol#458) is not in mixedCase
+Parameter StakingContract.deactivateOperator(uint256,address)._operatorIndex (src/contracts/StakingContract.sol#482) is not in mixedCase
+Parameter StakingContract.deactivateOperator(uint256,address)._temporaryFeeRecipient (src/contracts/StakingContract.sol#482) is not in mixedCase
+Parameter StakingContract.activateOperator(uint256,address)._operatorIndex (src/contracts/StakingContract.sol#496) is not in mixedCase
+Parameter StakingContract.activateOperator(uint256,address)._newFeeRecipient (src/contracts/StakingContract.sol#496) is not in mixedCase
+Parameter StakingContract.setOperatorFee(uint256)._operatorFee (src/contracts/StakingContract.sol#506) is not in mixedCase
+Parameter StakingContract.setGlobalFee(uint256)._globalFee (src/contracts/StakingContract.sol#516) is not in mixedCase
+Parameter StakingContract.addValidators(uint256,uint256,bytes,bytes)._operatorIndex (src/contracts/StakingContract.sol#531) is not in mixedCase
+Parameter StakingContract.addValidators(uint256,uint256,bytes,bytes)._keyCount (src/contracts/StakingContract.sol#532) is not in mixedCase
+Parameter StakingContract.addValidators(uint256,uint256,bytes,bytes)._publicKeys (src/contracts/StakingContract.sol#533) is not in mixedCase
+Parameter StakingContract.addValidators(uint256,uint256,bytes,bytes)._signatures (src/contracts/StakingContract.sol#534) is not in mixedCase
+Parameter StakingContract.removeValidators(uint256,uint256[])._operatorIndex (src/contracts/StakingContract.sol#587) is not in mixedCase
+Parameter StakingContract.removeValidators(uint256,uint256[])._indexes (src/contracts/StakingContract.sol#587) is not in mixedCase
+Parameter StakingContract.batchWithdrawELFee(bytes)._publicKeys (src/contracts/StakingContract.sol#646) is not in mixedCase
+Parameter StakingContract.batchWithdrawCLFee(bytes)._publicKeys (src/contracts/StakingContract.sol#664) is not in mixedCase
+Parameter StakingContract.batchWithdraw(bytes)._publicKeys (src/contracts/StakingContract.sol#681) is not in mixedCase
+Parameter StakingContract.withdrawELFee(bytes)._publicKey (src/contracts/StakingContract.sol#699) is not in mixedCase
+Parameter StakingContract.withdrawCLFee(bytes)._publicKey (src/contracts/StakingContract.sol#707) is not in mixedCase
+Parameter StakingContract.withdraw(bytes)._publicKey (src/contracts/StakingContract.sol#715) is not in mixedCase
+Parameter StakingContract.requestValidatorsExit(bytes)._publicKeys (src/contracts/StakingContract.sol#721) is not in mixedCase
+Parameter BytesLib.concat(bytes,bytes)._preBytes (src/contracts/libs/BytesLib.sol#6) is not in mixedCase
+Parameter BytesLib.concat(bytes,bytes)._postBytes (src/contracts/libs/BytesLib.sol#6) is not in mixedCase
+Parameter BytesLib.slice(bytes,uint256,uint256)._bytes (src/contracts/libs/BytesLib.sol#81) is not in mixedCase
+Parameter BytesLib.slice(bytes,uint256,uint256)._start (src/contracts/libs/BytesLib.sol#82) is not in mixedCase
+Parameter BytesLib.slice(bytes,uint256,uint256)._length (src/contracts/libs/BytesLib.sol#83) is not in mixedCase
+Parameter StakingContractStorageLib.setVersion(uint256)._newVersion (src/contracts/libs/StakingContractStorageLib.sol#51) is not in mixedCase
+Parameter StakingContractStorageLib.setAdmin(address)._newAdmin (src/contracts/libs/StakingContractStorageLib.sol#66) is not in mixedCase
+Parameter StakingContractStorageLib.setPendingAdmin(address)._newPendingAdmin (src/contracts/libs/StakingContractStorageLib.sol#74) is not in mixedCase
+Parameter StakingContractStorageLib.setTreasury(address)._newTreasury (src/contracts/libs/StakingContractStorageLib.sol#88) is not in mixedCase
+Parameter StakingContractStorageLib.setDepositContract(address)._newDepositContract (src/contracts/libs/StakingContractStorageLib.sol#102) is not in mixedCase
+Parameter StakingContractStorageLib.getValidatorsFundingInfo(uint256)._index (src/contracts/libs/StakingContractStorageLib.sol#155) is not in mixedCase
+Parameter StakingContractStorageLib.setValidatorsFundingInfo(uint256,uint32,uint32)._index (src/contracts/libs/StakingContractStorageLib.sol#171) is not in mixedCase
+Parameter StakingContractStorageLib.setValidatorsFundingInfo(uint256,uint32,uint32)._availableKeys (src/contracts/libs/StakingContractStorageLib.sol#172) is not in mixedCase
+Parameter StakingContractStorageLib.setValidatorsFundingInfo(uint256,uint32,uint32)._funded (src/contracts/libs/StakingContractStorageLib.sol#173) is not in mixedCase
+Parameter StakingContractStorageLib.setTotalAvailableValidators(uint256)._newTotal (src/contracts/libs/StakingContractStorageLib.sol#199) is not in mixedCase
+Parameter StakingContractStorageLib.setGlobalFee(uint256)._newTreasuryFee (src/contracts/libs/StakingContractStorageLib.sol#253) is not in mixedCase
+Parameter StakingContractStorageLib.setOperatorFee(uint256)._newOperatorFee (src/contracts/libs/StakingContractStorageLib.sol#267) is not in mixedCase
+Parameter StakingContractStorageLib.setELDispatcher(address)._newElDispatcher (src/contracts/libs/StakingContractStorageLib.sol#281) is not in mixedCase
+Parameter StakingContractStorageLib.setCLDispatcher(address)._newClDispatcher (src/contracts/libs/StakingContractStorageLib.sol#295) is not in mixedCase
+Parameter StakingContractStorageLib.setFeeRecipientImplementation(address)._newFeeRecipientImplementation (src/contracts/libs/StakingContractStorageLib.sol#310) is not in mixedCase
+Parameter StakingContractStorageLib.setWithdrawerCustomizationEnabled(bool)._enabled (src/contracts/libs/StakingContractStorageLib.sol#325) is not in mixedCase
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#conformance-to-solidity-naming-conventions
+INFO:Detectors:
+Detector: too-many-digits
+Clones.clone(address) (@openzeppelin/contracts/proxy/Clones.sol#25-34) uses literals with too many digits:
+	- mstore(uint256,uint256)(ptr_clone_asm_0,0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000) (@openzeppelin/contracts/proxy/Clones.sol#28)
+Clones.clone(address) (@openzeppelin/contracts/proxy/Clones.sol#25-34) uses literals with too many digits:
+	- mstore(uint256,uint256)(ptr_clone_asm_0 + 0x28,0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000) (@openzeppelin/contracts/proxy/Clones.sol#30)
+Clones.cloneDeterministic(address,bytes32) (@openzeppelin/contracts/proxy/Clones.sol#43-52) uses literals with too many digits:
+	- mstore(uint256,uint256)(ptr_cloneDeterministic_asm_0,0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000) (@openzeppelin/contracts/proxy/Clones.sol#46)
+Clones.cloneDeterministic(address,bytes32) (@openzeppelin/contracts/proxy/Clones.sol#43-52) uses literals with too many digits:
+	- mstore(uint256,uint256)(ptr_cloneDeterministic_asm_0 + 0x28,0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000) (@openzeppelin/contracts/proxy/Clones.sol#48)
+Clones.predictDeterministicAddress(address,bytes32,address) (@openzeppelin/contracts/proxy/Clones.sol#57-72) uses literals with too many digits:
+	- mstore(uint256,uint256)(ptr_predictDeterministicAddress_asm_0,0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000) (@openzeppelin/contracts/proxy/Clones.sol#64)
+Clones.predictDeterministicAddress(address,bytes32,address) (@openzeppelin/contracts/proxy/Clones.sol#57-72) uses literals with too many digits:
+	- mstore(uint256,uint256)(ptr_predictDeterministicAddress_asm_0 + 0x28,0x5af43d82803e903d91602b57fd5bf3ff00000000000000000000000000000000) (@openzeppelin/contracts/proxy/Clones.sol#66)
+StakingContract.slitherConstructorConstantVariables() (src/contracts/StakingContract.sol#13-959) uses literals with too many digits:
+	- DEPOSIT_SIZE_AMOUNT_LITTLEENDIAN64 = 0x0040597307000000000000000000000000000000000000000000000000000000 (src/contracts/StakingContract.sol#22-23)
+StakingContract.slitherConstructorConstantVariables() (src/contracts/StakingContract.sol#13-959) uses literals with too many digits:
+	- WITHDRAWAL_CREDENTIAL_PREFIX_01 = 0x0100000000000000000000000000000000000000000000000000000000000000 (src/contracts/StakingContract.sol#25-26)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#too-many-digits
+INFO:Detectors:
+Detector: unindexed-event-address
+Event StakingContract.ChangedWithdrawer(bytes,address) (src/contracts/StakingContract.sol#64) has address parameters but no indexed parameters
+Event StakingContract.ChangedTreasury(address) (src/contracts/StakingContract.sol#66) has address parameters but no indexed parameters
+Event StakingContract.ChangedAdmin(address) (src/contracts/StakingContract.sol#69) has address parameters but no indexed parameters
+Event StakingContract.NewOperator(address,address,uint256) (src/contracts/StakingContract.sol#71) has address parameters but no indexed parameters
+Event StakingContract.ChangedOperatorAddresses(uint256,address,address) (src/contracts/StakingContract.sol#72) has address parameters but no indexed parameters
+Event StakingContract.ExitRequest(address,bytes) (src/contracts/StakingContract.sol#76) has address parameters but no indexed parameters
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unindexed-event-address-parameters
+INFO:Slither:src/contracts/StakingContract.sol analyzed (6 contracts with 101 detectors), 122 result(s) found

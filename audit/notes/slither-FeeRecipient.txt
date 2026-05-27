@@ -1,0 +1,29 @@
+'forge clean' running (wd: /Users/dumebi/Downloads/Projects/bounty/kiln)
+'forge config --json' running
+'forge build --build-info src/contracts/FeeRecipient.sol' running (wd: /Users/dumebi/Downloads/Projects/bounty/kiln)
+INFO:Detectors:
+Detector: arbitrary-send-eth
+FeeRecipient.withdraw() (src/contracts/FeeRecipient.sol#36-38) sends eth to arbitrary user
+	Dangerous calls:
+	- dispatcher.dispatch{value: address(this).balance}(publicKeyRoot) (src/contracts/FeeRecipient.sol#37)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#functions-that-send-ether-to-arbitrary-destinations
+INFO:Detectors:
+Detector: solc-version
+Version constraint >=0.8.10 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)
+	- VerbatimInvalidDeduplication
+	- FullInlinerNonExpressionSplitArgumentEvaluationOrder
+	- MissingSideEffectsOnSelectorAccess
+	- AbiReencodingHeadOverflowWithStaticArrayCleanup
+	- DirtyBytesArrayToStorage
+	- DataLocationChangeInInternalOverride
+	- NestedCalldataArrayAbiReencodingSizeValidation.
+It is used by:
+	- >=0.8.10 (src/contracts/FeeRecipient.sol#2)
+	- >=0.8.10 (src/contracts/interfaces/IFeeDispatcher.sol#2)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity
+INFO:Detectors:
+Detector: naming-convention
+Parameter FeeRecipient.init(address,bytes32)._dispatcher (src/contracts/FeeRecipient.sol#19) is not in mixedCase
+Parameter FeeRecipient.init(address,bytes32)._publicKeyRoot (src/contracts/FeeRecipient.sol#19) is not in mixedCase
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#conformance-to-solidity-naming-conventions
+INFO:Slither:src/contracts/FeeRecipient.sol analyzed (2 contracts with 101 detectors), 4 result(s) found
