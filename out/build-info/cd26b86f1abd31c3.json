@@ -1,1 +1,0 @@
-{"id":"cd26b86f1abd31c3","source_id_to_path":{"0":"@openzeppelin/contracts/proxy/Clones.sol","1":"src/contracts/StakingContract.sol","2":"src/contracts/interfaces/IDepositContract.sol","3":"src/contracts/interfaces/IFeeRecipient.sol","4":"src/contracts/libs/BytesLib.sol","5":"src/contracts/libs/StakingContractStorageLib.sol"},"language":"Solidity"}
