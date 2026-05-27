@@ -1,0 +1,99 @@
+'forge clean' running (wd: /Users/dumebi/Downloads/Projects/bounty/kiln)
+'forge config --json' running
+'forge build --build-info src/contracts/ConsensusLayerFeeDispatcher.sol' running (wd: /Users/dumebi/Downloads/Projects/bounty/kiln)
+INFO:Detectors:
+Detector: arbitrary-send-eth
+ConsensusLayerFeeDispatcher.dispatch(bytes32) (src/contracts/ConsensusLayerFeeDispatcher.sol#59-119) sends eth to arbitrary user
+	Dangerous calls:
+	- (status,data) = withdrawer.call{value: balance - globalFee}() (src/contracts/ConsensusLayerFeeDispatcher.sol#95)
+	- (status,data) = operator.call{value: operatorFee}() (src/contracts/ConsensusLayerFeeDispatcher.sol#106)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#functions-that-send-ether-to-arbitrary-destinations
+INFO:Detectors:
+Detector: divide-before-multiply
+ConsensusLayerFeeDispatcher.dispatch(bytes32) (src/contracts/ConsensusLayerFeeDispatcher.sol#59-119) performs a multiplication on the result of a division:
+	- globalFee = (nonExemptBalance * stakingContract.getGlobalFee()) / BASIS_POINTS (src/contracts/ConsensusLayerFeeDispatcher.sol#89)
+	- operatorFee = (globalFee * stakingContract.getOperatorFee()) / BASIS_POINTS (src/contracts/ConsensusLayerFeeDispatcher.sol#90)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#divide-before-multiply
+INFO:Detectors:
+Detector: incorrect-equality
+ConsensusLayerFeeDispatcher.dispatch(bytes32) (src/contracts/ConsensusLayerFeeDispatcher.sol#59-119) uses a dangerous strict equality:
+	- balance == 0 (src/contracts/ConsensusLayerFeeDispatcher.sol#65)
+ConsensusLayerFeeDispatcher.dispatch(bytes32) (src/contracts/ConsensusLayerFeeDispatcher.sol#59-119) uses a dangerous strict equality:
+	- status == false (src/contracts/ConsensusLayerFeeDispatcher.sol#96)
+ConsensusLayerFeeDispatcher.dispatch(bytes32) (src/contracts/ConsensusLayerFeeDispatcher.sol#59-119) uses a dangerous strict equality:
+	- status == false (src/contracts/ConsensusLayerFeeDispatcher.sol#101)
+ConsensusLayerFeeDispatcher.dispatch(bytes32) (src/contracts/ConsensusLayerFeeDispatcher.sol#59-119) uses a dangerous strict equality:
+	- status == false (src/contracts/ConsensusLayerFeeDispatcher.sol#107)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#dangerous-strict-equalities
+INFO:Detectors:
+Detector: missing-zero-check
+ConsensusLayerFeeDispatcher.dispatch(bytes32).withdrawer (src/contracts/ConsensusLayerFeeDispatcher.sol#93) lacks a zero-check on :
+		- (status,data) = withdrawer.call{value: balance - globalFee}() (src/contracts/ConsensusLayerFeeDispatcher.sol#95)
+ConsensusLayerFeeDispatcher.dispatch(bytes32).operator (src/contracts/ConsensusLayerFeeDispatcher.sol#91) lacks a zero-check on :
+		- (status,data) = operator.call{value: operatorFee}() (src/contracts/ConsensusLayerFeeDispatcher.sol#106)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-zero-address-validation
+INFO:Detectors:
+Detector: reentrancy-events
+Reentrancy in ConsensusLayerFeeDispatcher.dispatch(bytes32) (src/contracts/ConsensusLayerFeeDispatcher.sol#59-119):
+	External calls:
+	- stakingContract.toggleWithdrawnFromPublicKeyRoot(_publicKeyRoot) (src/contracts/ConsensusLayerFeeDispatcher.sol#81)
+	- (status,data) = withdrawer.call{value: balance - globalFee}() (src/contracts/ConsensusLayerFeeDispatcher.sol#95)
+	- (status,data) = treasury.call{value: globalFee - operatorFee}() (src/contracts/ConsensusLayerFeeDispatcher.sol#100)
+	- (status,data) = operator.call{value: operatorFee}() (src/contracts/ConsensusLayerFeeDispatcher.sol#106)
+	External calls sending eth:
+	- (status,data) = withdrawer.call{value: balance - globalFee}() (src/contracts/ConsensusLayerFeeDispatcher.sol#95)
+	- (status,data) = treasury.call{value: globalFee - operatorFee}() (src/contracts/ConsensusLayerFeeDispatcher.sol#100)
+	- (status,data) = operator.call{value: operatorFee}() (src/contracts/ConsensusLayerFeeDispatcher.sol#106)
+	Event emitted after the call(s):
+	- Withdrawal(withdrawer,operator,_publicKeyRoot,balance - globalFee,operatorFee,globalFee - operatorFee) (src/contracts/ConsensusLayerFeeDispatcher.sol#111-118)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-4
+INFO:Detectors:
+Detector: assembly
+DispatchersStorageLib.getUint256(bytes32) (src/contracts/libs/DispatchersStorageLib.sol#5-9) uses assembly
+	- INLINE ASM (src/contracts/libs/DispatchersStorageLib.sol#6-8)
+DispatchersStorageLib.setUint256(bytes32,uint256) (src/contracts/libs/DispatchersStorageLib.sol#11-15) uses assembly
+	- INLINE ASM (src/contracts/libs/DispatchersStorageLib.sol#12-14)
+DispatchersStorageLib.getAddress(bytes32) (src/contracts/libs/DispatchersStorageLib.sol#17-21) uses assembly
+	- INLINE ASM (src/contracts/libs/DispatchersStorageLib.sol#18-20)
+DispatchersStorageLib.setAddress(bytes32,address) (src/contracts/libs/DispatchersStorageLib.sol#23-27) uses assembly
+	- INLINE ASM (src/contracts/libs/DispatchersStorageLib.sol#24-26)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#assembly-usage
+INFO:Detectors:
+Detector: boolean-equal
+ConsensusLayerFeeDispatcher.dispatch(bytes32) (src/contracts/ConsensusLayerFeeDispatcher.sol#59-119) compares to a boolean constant:
+	-status == false (src/contracts/ConsensusLayerFeeDispatcher.sol#107)
+ConsensusLayerFeeDispatcher.dispatch(bytes32) (src/contracts/ConsensusLayerFeeDispatcher.sol#59-119) compares to a boolean constant:
+	-status == false (src/contracts/ConsensusLayerFeeDispatcher.sol#96)
+ConsensusLayerFeeDispatcher.dispatch(bytes32) (src/contracts/ConsensusLayerFeeDispatcher.sol#59-119) compares to a boolean constant:
+	-status == false (src/contracts/ConsensusLayerFeeDispatcher.sol#101)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#boolean-equality
+INFO:Detectors:
+Detector: solc-version
+Version constraint >=0.8.10 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)
+	- VerbatimInvalidDeduplication
+	- FullInlinerNonExpressionSplitArgumentEvaluationOrder
+	- MissingSideEffectsOnSelectorAccess
+	- AbiReencodingHeadOverflowWithStaticArrayCleanup
+	- DirtyBytesArrayToStorage
+	- DataLocationChangeInInternalOverride
+	- NestedCalldataArrayAbiReencodingSizeValidation.
+It is used by:
+	- >=0.8.10 (src/contracts/ConsensusLayerFeeDispatcher.sol#2)
+	- >=0.8.10 (src/contracts/interfaces/IFeeDispatcher.sol#2)
+	- >=0.8.10 (src/contracts/interfaces/IStakingContractFeeDetails.sol#2)
+	- >=0.8.10 (src/contracts/libs/DispatchersStorageLib.sol#2)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity
+INFO:Detectors:
+Detector: low-level-calls
+Low level call in ConsensusLayerFeeDispatcher.dispatch(bytes32) (src/contracts/ConsensusLayerFeeDispatcher.sol#59-119):
+	- (status,data) = withdrawer.call{value: balance - globalFee}() (src/contracts/ConsensusLayerFeeDispatcher.sol#95)
+	- (status,data) = treasury.call{value: globalFee - operatorFee}() (src/contracts/ConsensusLayerFeeDispatcher.sol#100)
+	- (status,data) = operator.call{value: operatorFee}() (src/contracts/ConsensusLayerFeeDispatcher.sol#106)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#low-level-calls
+INFO:Detectors:
+Detector: naming-convention
+Parameter ConsensusLayerFeeDispatcher.initCLD(address)._stakingContract (src/contracts/ConsensusLayerFeeDispatcher.sol#54) is not in mixedCase
+Parameter ConsensusLayerFeeDispatcher.dispatch(bytes32)._publicKeyRoot (src/contracts/ConsensusLayerFeeDispatcher.sol#59) is not in mixedCase
+Parameter ConsensusLayerFeeDispatcher.getWithdrawer(bytes32)._publicKeyRoot (src/contracts/ConsensusLayerFeeDispatcher.sol#128) is not in mixedCase
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#conformance-to-solidity-naming-conventions
+INFO:Slither:src/contracts/ConsensusLayerFeeDispatcher.sol analyzed (4 contracts with 101 detectors), 21 result(s) found
